@@ -1,0 +1,112 @@
+﻿<Page x:Class="TaskManager.Pages.AddEditTaskPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Добавить/Изменить задачу">
+    <Grid>
+        <Border Background="White"
+                Margin="20"
+                CornerRadius="8"
+                Padding="30">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" 
+                                ShadowDepth="2" 
+                                Opacity="0.2"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Новая задача" 
+                          x:Name="PageTitle"
+                          Style="{StaticResource PageTitleStyle}"/>
+
+                <ScrollViewer Grid.Row="1" 
+                            Margin="0,10,0,20"
+                            VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Название"
+                                 Style="{StaticResource SubtitleStyle}"/>
+                        <TextBox x:Name="TitleTextBox"/>
+
+                        <TextBlock Text="Описание"
+                                 Style="{StaticResource SubtitleStyle}"
+                                 Margin="0,15,0,5"/>
+                        <TextBox x:Name="DescriptionTextBox"
+                               TextWrapping="Wrap"
+                               AcceptsReturn="True"
+                               Height="100"/>
+
+                        <Grid Margin="0,15,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel>
+                                <TextBlock Text="Дедлайн"
+                                         Style="{StaticResource SubtitleStyle}"/>
+                                <DatePicker x:Name="DueDatePicker"
+                                          Margin="5"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Время"
+                                         Style="{StaticResource SubtitleStyle}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox x:Name="TimeHourTextBox" 
+                                           Width="50"/>
+                                    <TextBlock Text=":" 
+                                             VerticalAlignment="Center"
+                                             Margin="5,0"/>
+                                    <TextBox x:Name="TimeMinuteTextBox" 
+                                           Width="50"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,15,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel>
+                                <TextBlock Text="Приоритет"
+                                         Style="{StaticResource SubtitleStyle}"/>
+                                <ComboBox x:Name="PriorityComboBox">
+                                    <ComboBoxItem Content="Низкий"/>
+                                    <ComboBoxItem Content="Средний"/>
+                                    <ComboBoxItem Content="Высокий"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Статус"
+                                         Style="{StaticResource SubtitleStyle}"/>
+                                <ComboBox x:Name="StatusComboBox">
+                                    <ComboBoxItem Content="Ждет выполнения"/>
+                                    <ComboBoxItem Content="В процессе"/>
+                                    <ComboBoxItem Content="Выполнена"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="2" 
+                          Orientation="Horizontal" 
+                          HorizontalAlignment="Right">
+                    <Button Content="Назад" 
+                            Click="CancelButton_Click"
+                            Background="{StaticResource TextSecondaryColor}" Width="68" Height="25"/>
+                    <Button Content="Сохранить" 
+                            Click="SaveButton_Click" Width="92" Height="25"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

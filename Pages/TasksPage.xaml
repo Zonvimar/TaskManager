@@ -1,0 +1,122 @@
+﻿<Page x:Class="TaskManager.Pages.TasksPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Задачи">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Верхняя панель с фильтрами -->
+        <Border Background="White"
+                CornerRadius="8"
+                Padding="15">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" 
+                                ShadowDepth="1" 
+                                Opacity="0.2"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox x:Name="PriorityFilter" 
+                             Width="173" Cursor="Hand"
+                             SelectionChanged="Filter_Changed" Height="34">
+                        <ComboBoxItem Content="Все"/>
+                        <ComboBoxItem Content="Низкий приоритет"/>
+                        <ComboBoxItem Content="Средний приоритет"/>
+                        <ComboBoxItem Content="Высокий приоритет"/>
+                    </ComboBox>
+
+                    <ComboBox x:Name="StatusFilter"
+                             Width="182"
+                             Margin="10,0" Cursor="Hand"
+                             SelectionChanged="Filter_Changed" Height="34">
+                        <ComboBoxItem Content="Все статусы"/>
+                        <ComboBoxItem Content="Ждет выполнения"/>
+                        <ComboBoxItem Content="В процессе"/>
+                        <ComboBoxItem Content="Выполнена"/>
+                    </ComboBox>
+
+                    <TextBox x:Name="SearchBox"
+                            Width="248"
+                            TextChanged="SearchBox_TextChanged" Text="" Height="34"
+                            />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" 
+                           Orientation="Horizontal">
+                    <Button Content="Добавить" Cursor="Hand"
+                            Click="AddTask_Click" Width="120"/>
+                    <Button Content="Статистика" Cursor="Hand"
+                            Click="ViewStatistics_Click"
+                            Background="{StaticResource PrimaryLightColor}" Width="120"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Таблица задач -->
+        <DataGrid x:Name="TasksGrid" 
+                  Grid.Row="2"
+                  Margin="0,20,0,0"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionChanged="TasksGrid_SelectionChanged"
+                  CanUserSortColumns="True" CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название"
+                                  Binding="{Binding Title}"
+                                  Width="*"/>
+                <DataGridTextColumn Header="Дедлайн" 
+                                  Binding="{Binding DueDate, StringFormat={}{0:dd/MM/yyyy HH:mm}}"
+                                  Width="150"/>
+                <DataGridTemplateColumn Header="Приоритет" 
+                                      Width="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Priority, Converter={StaticResource PriorityConverter}}"
+                                       Foreground="{Binding Priority, Converter={StaticResource PriorityColorConverter}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Статус" 
+                                      Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding Status, Converter={StaticResource StatusColorConverter}}"
+                                    CornerRadius="4"
+                                    Padding="8,4">
+                                <TextBlock Text="{Binding Status, Converter={StaticResource StatusConverter}}"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="200">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Изменить" Cursor="Hand"
+                                        Click="EditTask_Click"
+                                        Padding="30,6,30,6"/>
+                                <Button Content="Удалить" Cursor="Hand"
+                                        Click="DeleteTask_Click"
+                                        Background="{StaticResource AccentColor}"
+                                        Padding="16,6"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>

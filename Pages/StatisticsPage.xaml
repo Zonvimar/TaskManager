@@ -1,0 +1,126 @@
+﻿<Page x:Class="TaskManager.Pages.StatisticsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      Title="Statistics">
+    <ScrollViewer>
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Summary Cards -->
+            <WrapPanel>
+                <Border Background="White"
+                        Width="200"
+                        Height="120"
+                        Margin="10"
+                        CornerRadius="8"
+                        Padding="20">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" 
+                                        ShadowDepth="1" 
+                                        Opacity="0.2"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Text="Всего задач"
+                                 Style="{StaticResource SubtitleStyle}"/>
+                        <TextBlock x:Name="TotalTasksText"
+                                 FontSize="36"
+                                 FontWeight="Bold"
+                                 Foreground="{StaticResource PrimaryColor}"
+                                 Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="White"
+                        Width="200"
+                        Height="120"
+                        Margin="10"
+                        CornerRadius="8"
+                        Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="Выполненных"
+                                 Style="{StaticResource SubtitleStyle}"/>
+                        <TextBlock x:Name="CompletedTasksText"
+                                 FontSize="36"
+                                 FontWeight="Bold"
+                                 Foreground="#4CAF50"
+                                 Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="White"
+                        Width="200"
+                        Height="120"
+                        Margin="10"
+                        CornerRadius="8"
+                        Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="В ожидании"
+                                 Style="{StaticResource SubtitleStyle}"/>
+                        <TextBlock x:Name="PendingTasksText"
+                                 FontSize="36"
+                                 FontWeight="Bold"
+                                 Foreground="#FFC107"
+                                 Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+
+            <!-- Charts -->
+            <Grid Grid.Row="2" Margin="0,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Background="White"
+                        Margin="10"
+                        CornerRadius="8"
+                        Padding="20">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" 
+                                        ShadowDepth="1" 
+                                        Opacity="0.2"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Text="Задачи по приоритету"
+                                 Style="{StaticResource SubtitleStyle}"/>
+                        <lvc:PieChart x:Name="PriorityChart" 
+                                    Height="300"
+                                    LegendLocation="Right"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1"
+                        Background="White"
+                        Margin="10"
+                        CornerRadius="8"
+                        Padding="20">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" 
+                                        ShadowDepth="1" 
+                                        Opacity="0.2"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Text="Задачи по статусу"
+                                 Style="{StaticResource SubtitleStyle}"/>
+                        <lvc:PieChart x:Name="StatusChart" 
+                                    Height="300"
+                                    LegendLocation="Right"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <Grid Grid.Row="3" Margin="0,0,0,0">
+                <Button Content="Назад" 
+                            Click="CancelButton_Click"
+                            Background="{StaticResource TextSecondaryColor}" Height="30" HorizontalContentAlignment="Left" Cursor="Hand"/>
+            </Grid>
+        </Grid>
+
+    </ScrollViewer>
+</Page>
