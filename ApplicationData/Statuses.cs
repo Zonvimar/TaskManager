@@ -12,19 +12,17 @@ namespace TaskManager.ApplicationData
     using System;
     using System.Collections.Generic;
     
-    public partial class Tasks
+    public partial class Statuses
     {
-        public int TaskID { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<System.DateTime> DueDate { get; set; }
-        public Nullable<int> PriorityID { get; set; }
-        public Nullable<int> StatusID { get; set; }
-        public Nullable<int> UserID { get; set; }
+        public Statuses()
+        {
+            this.Tasks = new HashSet<Tasks>();
+        }
     
-        public virtual Priorities Priorities { get; set; }
-        public virtual Statuses Statuses { get; set; }
-        public virtual Users Users { get; set; }
+        public int StatusID { get; set; }
+        public string Name { get; set; }
+        public string Color { get; set; }
+    
+        public virtual ICollection<Tasks> Tasks { get; set; }
     }
 }

@@ -25,6 +25,9 @@ namespace TaskManager.ApplicationData
             throw new UnintentionalCodeFirstException();
         }
     
+        public DbSet<Priorities> Priorities { get; set; }
+        public DbSet<Statuses> Statuses { get; set; }
+        public DbSet<sysdiagrams> sysdiagrams { get; set; }
         public DbSet<Tasks> Tasks { get; set; }
         public DbSet<Users> Users { get; set; }
     }

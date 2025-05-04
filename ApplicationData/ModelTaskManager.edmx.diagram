@@ -4,10 +4,15 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="54b2fa231c1d4a8792c1d056931c119f" Name="Diagram1">
+      <Diagram DiagramId="1130f9b3f0534e8286481cd4da760489" Name="Diagram1">
+        <EntityTypeShape EntityType="TaskManagerDBModel.Priorities" Width="1.5" PointX="0.75" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TaskManagerDBModel.Statuses" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TaskManagerDBModel.sysdiagrams" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="TaskManagerDBModel.Tasks" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="TaskManagerDBModel.Users" Width="1.5" PointX="0.75" PointY="1.375" IsExpanded="true" />
-        <AssociationConnector Association="TaskManagerDBModel.FK__Tasks__UserID__412EB0B6" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="TaskManagerDBModel.Users" Width="1.5" PointX="0.75" PointY="7.625" IsExpanded="true" />
+        <AssociationConnector Association="TaskManagerDBModel.FK__Tasks__PriorityI__6477ECF3" ManuallyRouted="false" />
+        <AssociationConnector Association="TaskManagerDBModel.FK__Tasks__StatusID__656C112C" ManuallyRouted="false" />
+        <AssociationConnector Association="TaskManagerDBModel.FK__Tasks__UserID__66603565" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

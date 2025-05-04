@@ -12,19 +12,12 @@ namespace TaskManager.ApplicationData
     using System;
     using System.Collections.Generic;
     
-    public partial class Tasks
+    public partial class sysdiagrams
     {
-        public int TaskID { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<System.DateTime> DueDate { get; set; }
-        public Nullable<int> PriorityID { get; set; }
-        public Nullable<int> StatusID { get; set; }
-        public Nullable<int> UserID { get; set; }
-    
-        public virtual Priorities Priorities { get; set; }
-        public virtual Statuses Statuses { get; set; }
-        public virtual Users Users { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }
