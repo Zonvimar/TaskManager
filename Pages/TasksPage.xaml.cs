@@ -47,35 +47,12 @@ namespace TaskManager.Pages
         {
             try
             {
-
-                //var tasksWithDetails = AppConnect.modelOdb.Tasks
-                //    .Include(t => t.Statuses)    // Включаем данные из таблицы Statuses
-                //    .Include(t => t.Priorities)  // Включаем данные из таблицы Priorities
-                //    .ToList();
-                // Явно подгружаем связанные данные Status и Priority с помощью строкового Include
                 var tasks = AppConnect.modelOdb.Tasks
                     .Include("Statuses")
                     .Include("Priorities")
                     .Where(t => t.UserID == AppConnect.CurrentUser.UserID)
                     .OrderByDescending(t => t.DueDate)
                     .ToList();
-
-
-                // Проверяем задачи на наличие NULL в StatusID или PriorityID
-                //var nullStatusTasks = tasks.Where(t => t.StatusID == null || t.Status == null).ToList();
-                //var nullPriorityTasks = tasks.Where(t => t.PriorityID == null || t.Priority == null).ToList();
-
-                //if (nullStatusTasks.Any())
-                //{
-                //    MessageBox.Show($"Найдено {nullStatusTasks.Count} задач с отсутствующим статусом (StatusID = NULL или Status = null). Пожалуйста, проверьте данные в базе.",
-                //        "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
-                //}
-
-                //if (nullPriorityTasks.Any())
-                //{
-                //    MessageBox.Show($"Найдено {nullPriorityTasks.Count} задач с отсутствующим приоритетом (PriorityID = NULL или Priority = null). Пожалуйста, проверьте данные в базе.",
-                //        "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
-                //}
 
                 TasksGrid.ItemsSource = tasks;
             }

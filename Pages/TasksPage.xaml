@@ -73,7 +73,7 @@
                                   Binding="{Binding DueDate, StringFormat={}{0:dd/MM/yyyy HH:mm}}"
                                   Width="150"/>
                 <DataGridTemplateColumn Header="Приоритет" 
-                                      Width="150">
+                                      Width="150" CanUserSort="True" SortMemberPath="PriorityID">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border Background="{Binding Priorities.Color}"
@@ -87,7 +87,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Статус" 
-                                      Width="160">
+                                      Width="160" CanUserSort="True" SortMemberPath="StatusID">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border Background="{Binding Statuses.Color}"
