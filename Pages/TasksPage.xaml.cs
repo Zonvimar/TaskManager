@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
+using System.Runtime.Remoting.Contexts;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using TaskManager.ApplicationData;
 using TaskManager.Extensions;
@@ -24,23 +15,74 @@ namespace TaskManager.Pages
         public TasksPage()
         {
             InitializeComponent();
+            InitializeFilters();
             LoadTasks();
             InitializeNotifications();
+        }
+
+        private void InitializeFilters()
+        {
+            try
+            {
+                // Загружаем приоритеты (общие для всех)
+                var priorities = AppConnect.modelOdb.Priorities.ToList();
+                priorities.Insert(0, new Priorities { PriorityID = 0, Name = "Все приоритеты" });
+                PriorityFilter.ItemsSource = priorities;
+                PriorityFilter.SelectedIndex = 0;
+
+                // Загружаем статусы (общие для всех)
+                var statuses = AppConnect.modelOdb.Statuses.ToList();
+                statuses.Insert(0, new Statuses { StatusID = 0, Name = "Все статусы" });
+                StatusFilter.ItemsSource = statuses;
+                StatusFilter.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при инициализации фильтров: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoadTasks()
         {
             try
             {
+
+                //var tasksWithDetails = AppConnect.modelOdb.Tasks
+                //    .Include(t => t.Statuses)    // Включаем данные из таблицы Statuses
+                //    .Include(t => t.Priorities)  // Включаем данные из таблицы Priorities
+                //    .ToList();
+                // Явно подгружаем связанные данные Status и Priority с помощью строкового Include
                 var tasks = AppConnect.modelOdb.Tasks
+                    .Include("Statuses")
+                    .Include("Priorities")
                     .Where(t => t.UserID == AppConnect.CurrentUser.UserID)
                     .OrderByDescending(t => t.DueDate)
                     .ToList();
+
+
+                // Проверяем задачи на наличие NULL в StatusID или PriorityID
+                //var nullStatusTasks = tasks.Where(t => t.StatusID == null || t.Status == null).ToList();
+                //var nullPriorityTasks = tasks.Where(t => t.PriorityID == null || t.Priority == null).ToList();
+
+                //if (nullStatusTasks.Any())
+                //{
+                //    MessageBox.Show($"Найдено {nullStatusTasks.Count} задач с отсутствующим статусом (StatusID = NULL или Status = null). Пожалуйста, проверьте данные в базе.",
+                //        "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //}
+
+                //if (nullPriorityTasks.Any())
+                //{
+                //    MessageBox.Show($"Найдено {nullPriorityTasks.Count} задач с отсутствующим приоритетом (PriorityID = NULL или Priority = null). Пожалуйста, проверьте данные в базе.",
+                //        "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //}
+
                 TasksGrid.ItemsSource = tasks;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при загрузке задач: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка при загрузке задач: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -55,20 +97,22 @@ namespace TaskManager.Pages
         private void CheckDueTasks(object sender, EventArgs e)
         {
             var deadline = DateTime.Now.AddMinutes(30);
-
-            var dueTasks = AppConnect.modelOdb.Tasks
+            if(AppConnect.CurrentUser != null)
+            {
+                var dueTasks = AppConnect.modelOdb.Tasks
                 .Where(t => t.UserID == AppConnect.CurrentUser.UserID &&
                            t.DueDate.HasValue &&
-                           t.DueDate.Value <= deadline && 
-                           t.Status != 3)
+                           t.DueDate.Value <= deadline &&
+                           t.StatusID != 3)
                 .ToList();
 
-            foreach (var task in dueTasks)
-            {
-                NotificationExtenstions.ShowTaskDueNotification(task.Title, (DateTime)task.DueDate);
+                foreach (var task in dueTasks)
+                {
+                    NotificationExtenstions.ShowTaskDueNotification(task.Title, (DateTime)task.DueDate);
+                }
             }
+            
         }
-
 
         private void Filter_Changed(object sender, SelectionChangedEventArgs e)
         {
@@ -82,27 +126,38 @@ namespace TaskManager.Pages
 
         private void ApplyFilters()
         {
-            var query = AppConnect.modelOdb.Tasks
-                .Where(t => t.UserID == AppConnect.CurrentUser.UserID);
-
-            if (!string.IsNullOrWhiteSpace(SearchBox.Text))
+            try
             {
-                var searchText = SearchBox.Text.ToLower();
-                query = query.Where(t => t.Title.ToLower().Contains(searchText) ||
-                                       t.Description.ToLower().Contains(searchText));
-            }
+                var query = AppConnect.modelOdb.Tasks
+                    .Where(t => t.UserID == AppConnect.CurrentUser.UserID);
 
-            if (PriorityFilter.SelectedIndex > 0)
+                // Фильтр по поиску
+                if (!string.IsNullOrWhiteSpace(SearchBox.Text))
+                {
+                    var searchText = SearchBox.Text.ToLower();
+                    query = query.Where(t => t.Title.ToLower().Contains(searchText) ||
+                                            t.Description.ToLower().Contains(searchText));
+                }
+
+                // Фильтр по приоритету
+                if (PriorityFilter.SelectedValue is int priorityId && priorityId > 0)
+                {
+                    query = query.Where(t => t.PriorityID == priorityId);
+                }
+
+                // Фильтр по статусу
+                if (StatusFilter.SelectedValue is int statusId && statusId > 0)
+                {
+                    query = query.Where(t => t.StatusID == statusId);
+                }
+
+                TasksGrid.ItemsSource = query.OrderByDescending(t => t.DueDate).ToList();
+            }
+            catch (Exception ex)
             {
-                query = query.Where(t => t.Priority == PriorityFilter.SelectedIndex);
+                MessageBox.Show($"Ошибка при применении фильтров: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            if (StatusFilter.SelectedIndex > 0)
-            {
-                query = query.Where(t => t.Status == StatusFilter.SelectedIndex);
-            }
-
-            TasksGrid.ItemsSource = query.OrderByDescending(t => t.DueDate).ToList();
         }
 
         private void AddTask_Click(object sender, RoutedEventArgs e)
@@ -123,8 +178,8 @@ namespace TaskManager.Pages
             if (sender is Button button && button.DataContext is Tasks task)
             {
                 var result = MessageBox.Show(
-                    "Вы уверены что хотите удалить задачу?",
-                    "Подтвердить",
+                    "Вы уверены, что хотите удалить задачу?",
+                    "Подтверждение удаления",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
 
@@ -138,7 +193,7 @@ namespace TaskManager.Pages
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Ошибка удаления задачи: {ex.Message}", "Ошибка",
+                        MessageBox.Show($"Ошибка при удалении задачи: {ex.Message}", "Ошибка",
                             MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -150,14 +205,10 @@ namespace TaskManager.Pages
             NavigationService.Navigate(new StatisticsPage());
         }
 
-        private void TasksGrid_SelectionChanged(object sender, RoutedEventArgs e)
+        private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            //NavigationService.Navigate(new StatisticsPage());
-        }
-
-        private void TasksGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            NavigationService.Navigate(new LoginPage());
+            AppConnect.CurrentUser = null;
         }
     }
 }

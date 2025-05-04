@@ -85,16 +85,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ModelTaskManager.edmx</DependentUpon>
     </Compile>
+    <Compile Include="ApplicationData\Priorities.cs">
+      <DependentUpon>ModelTaskManager.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationData\Statuses.cs">
+      <DependentUpon>ModelTaskManager.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationData\sysdiagrams.cs">
+      <DependentUpon>ModelTaskManager.tt</DependentUpon>
+    </Compile>
     <Compile Include="ApplicationData\Tasks.cs">
       <DependentUpon>ModelTaskManager.tt</DependentUpon>
     </Compile>
     <Compile Include="ApplicationData\Users.cs">
       <DependentUpon>ModelTaskManager.tt</DependentUpon>
     </Compile>
-    <Compile Include="Converters\PriorityColorConverter.cs" />
-    <Compile Include="Converters\PriorityConverter.cs" />
-    <Compile Include="Converters\StatusColorConverter.cs" />
-    <Compile Include="Converters\StatusConverter.cs" />
     <Compile Include="Extensions\NotificationExtenstions.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -170,16 +175,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ApplicationData\ModelTaskManager.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ModelTaskManager.Context.cs</LastGenOutput>
-      <DependentUpon>ModelTaskManager.edmx</DependentUpon>
-    </Content>
-    <Content Include="ApplicationData\ModelTaskManager.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ModelTaskManager.edmx</DependentUpon>
-      <LastGenOutput>ModelTaskManager.cs</LastGenOutput>
-    </Content>
     <Resource Include="Resources\Images\icon.png" />
   </ItemGroup>
   <ItemGroup>
@@ -224,6 +219,17 @@
       <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="ApplicationData\ModelTaskManager.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelTaskManager.edmx</DependentUpon>
+      <LastGenOutput>ModelTaskManager.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="ApplicationData\ModelTaskManager.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelTaskManager.edmx</DependentUpon>
+      <LastGenOutput>ModelTaskManager.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

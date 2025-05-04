@@ -1,24 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TaskManager.ApplicationData;
 
 namespace TaskManager.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для AddEditTaskPage.xaml
-    /// </summary>
     public partial class AddEditTaskPage : Page
     {
         private Tasks _currentTask;
@@ -28,6 +16,7 @@ namespace TaskManager.Pages
         {
             InitializeComponent();
             InitializePage(task);
+            LoadComboBoxes();
         }
 
         private void InitializePage(Tasks task)
@@ -35,16 +24,35 @@ namespace TaskManager.Pages
             if (task != null)
             {
                 _currentTask = task;
-                _isEditMode = true;
-                PageTitle.Text = "Редактирование задачи";
                 LoadTaskData();
+                _isEditMode = true;
+                PageTitle.Text = "Редактировать задачу";
             }
             else
             {
                 _currentTask = new Tasks();
                 _isEditMode = false;
-                PageTitle.Text = "Добавление задачи";
+                PageTitle.Text = "Новая задача";
                 SetDefaultValues();
+            }
+        }
+
+        private void LoadComboBoxes()
+        {
+            try
+            {
+                // Загружаем приоритеты (общие для всех)
+                var priorities = AppConnect.modelOdb.Priorities.ToList();
+                PriorityComboBox.ItemsSource = priorities;
+
+                // Загружаем статусы (общие для всех)
+                var statuses = AppConnect.modelOdb.Statuses.ToList();
+                StatusComboBox.ItemsSource = statuses;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке приоритетов/статусов: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -60,8 +68,8 @@ namespace TaskManager.Pages
                 TimeMinuteTextBox.Text = _currentTask.DueDate.Value.Minute.ToString("D2");
             }
 
-            PriorityComboBox.SelectedIndex = (int)(_currentTask.Priority - 1);
-            StatusComboBox.SelectedIndex = (int)(_currentTask.Status - 1);
+            PriorityComboBox.SelectedValue = _currentTask.PriorityID;
+            StatusComboBox.SelectedValue = _currentTask.StatusID;
         }
 
         private void SetDefaultValues()
@@ -69,8 +77,17 @@ namespace TaskManager.Pages
             DueDatePicker.SelectedDate = DateTime.Today;
             TimeHourTextBox.Text = DateTime.Now.Hour.ToString("D2");
             TimeMinuteTextBox.Text = DateTime.Now.Minute.ToString("D2");
-            PriorityComboBox.SelectedIndex = 0;
-            StatusComboBox.SelectedIndex = 0;
+
+            // Устанавливаем значения по умолчанию
+            var defaultPriority = AppConnect.modelOdb.Priorities
+                .FirstOrDefault(p => p.Name == "Низкий");
+            if (defaultPriority != null)
+                PriorityComboBox.SelectedValue = defaultPriority.PriorityID;
+
+            var defaultStatus = AppConnect.modelOdb.Statuses
+                .FirstOrDefault(s => s.Name == "К выполнению");
+            if (defaultStatus != null)
+                StatusComboBox.SelectedValue = defaultStatus.StatusID;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -96,7 +113,7 @@ namespace TaskManager.Pages
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка сохранения задачи: {ex.Message}", "Ошибка",
+                MessageBox.Show($"Ошибка при сохранении задачи: {ex.Message}", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -105,28 +122,42 @@ namespace TaskManager.Pages
         {
             if (string.IsNullOrWhiteSpace(TitleTextBox.Text))
             {
-                MessageBox.Show("Пожалуйста введите название задачи.", "Ошибка валидации",
+                MessageBox.Show("Введите название задачи.", "Ошибка валидации",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 
             if (!DueDatePicker.SelectedDate.HasValue)
             {
-                MessageBox.Show("Пожалуйста выберите дадту дедлайна.", "Ошибка валидации",
+                MessageBox.Show("Выберите срок выполнения.", "Ошибка валидации",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 
             if (!int.TryParse(TimeHourTextBox.Text, out int hour) || hour < 0 || hour > 23)
             {
-                MessageBox.Show("Пожалуйста, введите час корректно (0-23).", "Ошибка валидации",
+                MessageBox.Show("Введите корректный час (0-23).", "Ошибка валидации",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 
             if (!int.TryParse(TimeMinuteTextBox.Text, out int minute) || minute < 0 || minute > 59)
             {
-                MessageBox.Show("Пожалуйста, введите минуты корректно (0-59).", "Ошибка валидации",
+                MessageBox.Show("Введите корректные минуты (0-59).", "Ошибка валидации",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (PriorityComboBox.SelectedValue == null)
+            {
+                MessageBox.Show("Выберите приоритет.", "Ошибка валидации",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (StatusComboBox.SelectedValue == null)
+            {
+                MessageBox.Show("Выберите статус.", "Ошибка валидации",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
@@ -141,8 +172,8 @@ namespace TaskManager.Pages
             _currentTask.DueDate = DueDatePicker.SelectedDate.Value
                 .AddHours(int.Parse(TimeHourTextBox.Text))
                 .AddMinutes(int.Parse(TimeMinuteTextBox.Text));
-            _currentTask.Priority = PriorityComboBox.SelectedIndex + 1;
-            _currentTask.Status = StatusComboBox.SelectedIndex + 1;
+            _currentTask.PriorityID = (int)PriorityComboBox.SelectedValue;
+            _currentTask.StatusID = (int)StatusComboBox.SelectedValue;
 
             if (!_isEditMode)
             {

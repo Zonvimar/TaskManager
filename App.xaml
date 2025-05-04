@@ -1,7 +1,6 @@
 ﻿<Application x:Class="TaskManager.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converters="clr-namespace:TaskManager.Converters"
              StartupUri="MainWindow.xaml"
              >
     <Application.Resources>
@@ -107,12 +106,6 @@
             <Setter Property="Padding" Value="10,8"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
-
-
-        <converters:PriorityConverter x:Key="PriorityConverter"/>
-        <converters:PriorityColorConverter x:Key="PriorityColorConverter"/>
-        <converters:StatusConverter x:Key="StatusConverter"/>
-        <converters:StatusColorConverter x:Key="StatusColorConverter"/>
 
     </Application.Resources>
 </Application>

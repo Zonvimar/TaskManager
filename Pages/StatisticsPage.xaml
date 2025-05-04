@@ -2,7 +2,7 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-      Title="Statistics">
+      Title="Статистика">
     <ScrollViewer>
         <Grid Margin="20">
             <Grid.RowDefinitions>
@@ -43,7 +43,7 @@
                         CornerRadius="8"
                         Padding="20">
                     <StackPanel>
-                        <TextBlock Text="Выполненных"
+                        <TextBlock Text="Завершено"
                                  Style="{StaticResource SubtitleStyle}"/>
                         <TextBlock x:Name="CompletedTasksText"
                                  FontSize="36"
@@ -72,7 +72,7 @@
             </WrapPanel>
 
             <!-- Charts -->
-            <Grid Grid.Row="2" Margin="0,0,0,0">
+            <Grid Grid.Row="2" Margin="0,20,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -121,6 +121,5 @@
                             Background="{StaticResource TextSecondaryColor}" Height="30" HorizontalContentAlignment="Left" Cursor="Hand"/>
             </Grid>
         </Grid>
-
     </ScrollViewer>
 </Page>

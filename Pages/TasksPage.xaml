@@ -27,37 +27,32 @@
 
                 <StackPanel Orientation="Horizontal">
                     <ComboBox x:Name="PriorityFilter" 
-                             Width="173" Cursor="Hand"
-                             SelectionChanged="Filter_Changed" Height="34">
-                        <ComboBoxItem Content="Все"/>
-                        <ComboBoxItem Content="Низкий приоритет"/>
-                        <ComboBoxItem Content="Средний приоритет"/>
-                        <ComboBoxItem Content="Высокий приоритет"/>
-                    </ComboBox>
-
-                    <ComboBox x:Name="StatusFilter"
-                             Width="182"
-                             Margin="10,0" Cursor="Hand"
-                             SelectionChanged="Filter_Changed" Height="34">
-                        <ComboBoxItem Content="Все статусы"/>
-                        <ComboBoxItem Content="Ждет выполнения"/>
-                        <ComboBoxItem Content="В процессе"/>
-                        <ComboBoxItem Content="Выполнена"/>
-                    </ComboBox>
-
+                             Width="180"
+                             SelectionChanged="Filter_Changed"
+                             DisplayMemberPath="Name"
+                             SelectedValuePath="PriorityID"/>
+                    <ComboBox x:Name="StatusFilter" 
+                             Width="180"
+                             Margin="10,0"
+                             SelectionChanged="Filter_Changed"
+                             DisplayMemberPath="Name"
+                             SelectedValuePath="StatusID" Height="32"/>
                     <TextBox x:Name="SearchBox"
-                            Width="248"
-                            TextChanged="SearchBox_TextChanged" Text="" Height="34"
-                            />
+                            TextChanged="SearchBox_TextChanged" Height="32" Width="203" Padding="5,5,5,0"
+                            
+                             />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" 
                            Orientation="Horizontal">
-                    <Button Content="Добавить" Cursor="Hand"
-                            Click="AddTask_Click" Width="120"/>
-                    <Button Content="Статистика" Cursor="Hand"
+                    <Button Content="Добавить задачу"
+                            Click="AddTask_Click" Width="152" Height="32"/>
+                    <Button Content="Статистика"
                             Click="ViewStatistics_Click"
-                            Background="{StaticResource PrimaryLightColor}" Width="120"/>
+                            Background="{StaticResource PrimaryLightColor}" Width="105" Height="32"/>
+                    <Button Content="Выйти"
+                            Click="Logout_Click"
+                            Background="{StaticResource TextSecondaryColor}" Width="105" Height="32"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -69,49 +64,59 @@
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   SelectionMode="Single"
-                  SelectionChanged="TasksGrid_SelectionChanged"
                   CanUserSortColumns="True" CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Название"
+                <DataGridTextColumn Header="Название" 
                                   Binding="{Binding Title}"
                                   Width="*"/>
-                <DataGridTextColumn Header="Дедлайн" 
+                <DataGridTextColumn Header="Срок выполнения" 
                                   Binding="{Binding DueDate, StringFormat={}{0:dd/MM/yyyy HH:mm}}"
                                   Width="150"/>
                 <DataGridTemplateColumn Header="Приоритет" 
                                       Width="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Priority, Converter={StaticResource PriorityConverter}}"
-                                       Foreground="{Binding Priority, Converter={StaticResource PriorityColorConverter}}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Статус" 
-                                      Width="120">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Border Background="{Binding Status, Converter={StaticResource StatusColorConverter}}"
+                            <Border Background="{Binding Priorities.Color}"
                                     CornerRadius="4"
                                     Padding="8,4">
-                                <TextBlock Text="{Binding Status, Converter={StaticResource StatusConverter}}"
+                                <TextBlock Text="{Binding Priorities.Name}"
                                            Foreground="White"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                           HorizontalAlignment="Center"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="200">
+                <DataGridTemplateColumn Header="Статус" 
+                                      Width="160">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Изменить" Cursor="Hand"
+                            <Border Background="{Binding Statuses.Color}"
+                                    CornerRadius="4"
+                                    Padding="8,4">
+                                <TextBlock Text="{Binding Statuses.Name}"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="300">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <Button Content="Редактировать"
                                         Click="EditTask_Click"
-                                        Padding="30,6,30,6"/>
-                                <Button Content="Удалить" Cursor="Hand"
+                                        Width="100"
+                                        Padding="10,4"
+                                        Margin="0,0,10,0"/>
+                                <Button Content="Удалить"
                                         Click="DeleteTask_Click"
+                                        Width="80"
                                         Background="{StaticResource AccentColor}"
-                                        Padding="16,6"/>
+                                        Padding="10,4"
+                                        Margin="0,0,10,0"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
